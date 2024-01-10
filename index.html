@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Activation Code Generator</title>
+</head>
+<body>
+    <h1>Activation Code Generator</h1>
+    
+    <label for="userKeyInput">Enter your key:</label>
+    <input type="text" id="userKeyInput">
+    
+    <button onclick="generateActivationCode()">Generate Activation Code</button>
+    
+    <textarea id="result" rows="4" cols="50" readonly></textarea>
+    
+    <button onclick="copyToClipboard()">Copy</button>
+
+    <script>
+        function encodeToBase64(data_dict) {
+            // Encode all values in the dictionary to Base64 except specific keys
+            const excludedKeys = ['Item_id', 'purchasecode', 'validDays', 'StartDate', 'EndDate'];
+            for (let key in data_dict) {
+                if (!excludedKeys.includes(key)) {
+                    let encodedValue = btoa(String(data_dict[key]));
+                    data_dict[key] = encodedValue;
+                }
+            }
+            return data_dict;
+        }
+
+        function generateActivationCode() {
+            let userKey = document.getElementById("userKeyInput").value.trim();
+
+            if (userKey === "") {
+                alert("Please enter a key.");
+                return;
+            }
+
+            let currentDate = new Date();
+            let startDate = currentDate.toISOString();
+
+            let endDate = new Date(currentDate.getTime() + 1 * 24 * 60 * 60 * 1000).toISOString();
+
+            let data = {
+                "ActivationCode": userKey,
+                "validDays": 1,
+                "StartDate": startDate,
+                "EndDate": endDate,
+                "Item_id": "35762285",
+                "purchasecode": "X"
+            };
+
+            let encodedData = encodeToBase64(data);
+            let finalOutput = JSON.stringify(encodedData, null, 4);
+            let encodedFinalOutput = btoa(finalOutput);
+
+            document.getElementById("result").value = encodedFinalOutput;
+        }
+
+        function copyToClipboard() {
+            let copyText = document.getElementById("result");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Licence Key Copied: " + copyText.value);
+        }
+    </script>
+</body>
+</html>
